@@ -307,3 +307,55 @@ button:focus-visible {
   }
 }
 
+/* Add this to your main CSS or Navbar-specific CSS */
+.navbar-collapse {
+  background-color: white;   /* Mobile dropdown should have white background */
+  z-index: 9999;             /* Ensure it stays above other content */
+  border-radius: 0 0 10px 10px;
+  padding: 1rem;
+}
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 0 0 10px 10px;
+    padding: 1rem 1.2rem;
+  }
+
+  .navbar-toggler {
+    z-index: 1001;
+  }
+
+  .navbar {
+    position: relative;
+  }
+}
+@media (max-width: 991.98px) {
+  .mobile-nav-collapse {
+    position: absolute !important;
+    top: 56px; /* height of navbar */
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1050;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 10px 10px;
+    padding: 1rem;
+  }
+
+  .navbar-toggler {
+    z-index: 1100;
+  }
+
+  .navbar.fixed-top {
+    position: fixed !important;
+    top: 0;
+    width: 100%;
+    z-index: 1100;
+  }
+}

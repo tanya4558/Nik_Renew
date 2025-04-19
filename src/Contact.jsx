@@ -1,148 +1,71 @@
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React from 'react';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from 'react-icons/fa';
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: ""
-  });
-
-  // Phone number to receive messages (without any spaces or special characters)
-  const whatsappNumber = "447745238153"; // Replace with your preferred number
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Format the message with all form data
-    const formattedMessage = `
-Name: ${formData.name}
-Email: ${formData.email}
-Subject: ${formData.subject}
-Message: ${formData.message}
-    `.trim();
-    
-    // Encode the message for URL
-    const encodedMessage = encodeURIComponent(formattedMessage);
-    
-    // Create WhatsApp URL
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, "_blank");
-  };
-
-  // Soothing sage green color
-  const sageGreen = "#e8f0e1";
-  // Text color that complements the background
-  const textColor = "#3a5a40";
+const ContactPage = () => {
+  const contacts = [
+    {
+      name: 'Rahul Chourasia',
+      role: 'CEO & Co-Founder',
+      phone: '+44 7774 842038',
+      email: 'Rahul@nikrenewenergy.com',
+      location: 'London, United Kingdom',
+      whatsapp: 'https://wa.me/447774842038'
+    },
+    {
+      name: 'Nikhil Kumar',
+      role: 'Co-Founder',
+      phone: '+44 7745 238153',
+      email: 'Nikhil@nikrenewenergy.com',
+      location: 'London, United Kingdom',
+      whatsapp: 'https://wa.me/447745238153'
+    }
+  ];
 
   return (
-    <div className="contact-page py-5 mt-5">
-      <div className="container">
-        <div className="row align-items-center min-vh-100">
-          {/* Contact Details Section */}
-          <div 
-            className="col-md-6 p-5 rounded-start" 
-            style={{ 
-              backgroundColor: sageGreen,
-              color: textColor
-            }}
-          >
-            <h2 className="fw-bold mb-4">Contact Us</h2>
-            <p className="mb-4">Get in touch with our leadership team. We are here to assist and collaborate!</p>
-            <hr style={{ borderColor: textColor, opacity: 0.2 }} />
-            
-            {/* Nikhil Kumar */}
-            <div className="mb-4">
-              <h4 className="fw-bold">Nikhil Kumar</h4>
-              <p className="mb-1">Co-Founder</p>
-              <p className="mb-1"><i className="bi bi-telephone-fill me-2"></i> +44 7745 238153</p>
-              <p><i className="bi bi-envelope-fill me-2"></i> <a 
-                href="mailto:Nikhil@nikrenewenergy.com" 
-                style={{ color: textColor, textDecoration: "none", fontWeight: "500" }}
-              >Nikhil@nikrenewenergy.com</a></p>
-            </div>
-
-            {/* Rahul Chourasia */}
-            <div>
-              <h4 className="fw-bold">Rahul Chourasia</h4>
-              <p className="mb-1">CEO & Co-Founder</p>
-              <p className="mb-1"><i className="bi bi-telephone-fill me-2"></i> +44 7774 842038</p>
-              <p><i className="bi bi-envelope-fill me-2"></i> <a 
-                href="mailto:Rahul@nikrenewenergy.com" 
-                style={{ color: textColor, textDecoration: "none", fontWeight: "500" }}
-              >Rahul@nikrenewenergy.com</a></p>
-            </div>
+    <div className="bg-light-subtle py-5 min-vh-10 d-flex align-items-center justify-content-center">
+      <div className="w-100" style={{ maxWidth: '1100px' }}>
+        <div className="shadow-lg rounded-4 bg-white p-4">
+          <div className="text-center mb-4">
+            <h2 className="fw-bold">Contact Us</h2>
+            <p className="text-secondary mb-0">
+              Get in touch with our leadership team. We are here to assist and collaborate!
+            </p>
           </div>
-
-          {/* Contact Form Section */}
-          <div className="col-md-6">
-            <div className="card p-4 shadow-lg border-0 rounded-end">
-              <h3 className="text-center fw-bold mb-4" style={{ color: "#3a5a40" }}>Get in Touch</h3>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <input 
-                    type="text" 
-                    className="form-control form-control-lg" 
-                    placeholder="Name" 
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
+          <div className="row g-4 d-flex">
+            {contacts.map((person, index) => (
+              <div key={index} className="col-md-6 d-flex">
+                <div className="p-3 border rounded-3 d-flex flex-column w-100">
+                  <h4 className="fw-bold text-success">{person.name}</h4>
+                  <p className="text-muted">{person.role}</p>
+                  <div className="d-flex align-items-start mb-2">
+                    <FaPhone className="me-2 mt-1 text-success" />
+                    <span>{person.phone}</span>
+                  </div>
+                  <div className="d-flex align-items-start mb-2">
+                    <FaEnvelope className="me-2 mt-1 text-success" />
+                    <span className="text-break">{person.email}</span>
+                  </div>
+                  <div className="d-flex align-items-start mb-3">
+                    <FaMapMarkerAlt className="me-2 mt-1 text-success" />
+                    <span>{person.location}</span>
+                  </div>
+                  <div className="mt-auto">
+                    <a
+                      href={person.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-success w-100 d-flex align-items-center justify-content-center fw-semibold"
+                    >
+                      <FaWhatsapp className="me-2" />
+                      WhatsApp Me
+                    </a>
+                  </div>
                 </div>
-                {/* <div className="mb-3">
-                  <input 
-                    type="email" 
-                    className="form-control form-control-lg" 
-                    placeholder="Email" 
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div> */}
-                <div className="mb-3">
-                  <input 
-                    type="text" 
-                    className="form-control form-control-lg" 
-                    placeholder="Subject" 
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <textarea 
-                    className="form-control form-control-lg" 
-                    rows="4" 
-                    placeholder="Message" 
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                <button 
-                  type="submit" 
-                  className="btn btn-lg w-100 text-white" 
-                  style={{ backgroundColor: "#3a5a40" }}
-                >
-                  <i className="bi bi-whatsapp me-2"></i> Send via WhatsApp
-                </button>
-              </form>
-            </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-4 text-muted small">
+            Email us directly or use WhatsApp for quicker responses
           </div>
         </div>
       </div>
@@ -150,4 +73,4 @@ Message: ${formData.message}
   );
 };
 
-export default Contact;
+export default ContactPage;

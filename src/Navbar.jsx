@@ -1,76 +1,68 @@
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState, useEffect } from "react";
-import NavBarImage from './assets/Nik_Renew_Logo.jpg';
+import { useEffect } from "react";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import NikRenewLogo from "./assets/Nik_Renew_Logo.jpg";
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-
-  // Handle scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        if (navbarToggler.getAttribute('aria-expanded') === 'true') {
+          navbarToggler.click();
+        }
+      });
+    });
+
+    return () => {
+      navLinks.forEach(link => {
+        link.removeEventListener('click', () => {});
+      });
+    };
   }, []);
 
   return (
-    <nav className={`navbar navbar-expand-lg fixed-top w-100 ${scrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}
-      style={{ transition: 'all 0.3s ease' }}>
-      <div className="container">
-        {/* Left-aligned logo and brand name */}
-        <Link className="navbar-brand d-flex align-items-center" to="/">
-          <img src={NavBarImage} alt="Logo" width="60" height="45" className="me-2 rounded" />
-          <span className="fw-bold" style={{ fontSize: '1.3rem', background: 'linear-gradient(to right, #0062cc, #0097ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            NIK RENEW
-          </span>
-        </Link>
-
-        <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        {/* Right-aligned menu */}
-        <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-          <ul className="navbar-nav gap-1">
-            {['Home', 'About', 'Blog', 'Contact'].map((item) => (
-              <li className="nav-item" key={item}>
-                <Link
-                  className="nav-link px-3 py-2 rounded-pill fw-medium"
-                  to={item === "Home" ? "" : item.toLowerCase()} // Fix: Remove leading "/"
-                  style={{
-                    transition: 'all 0.2s ease',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  {item}
-                </Link>
-              </li>
-            ))}
-
-            {/* <li className="nav-item ms-2">
-              <Link 
-                className="nav-link px-4 py-2 rounded-pill text-white fw-medium" 
-                to="/get-started"
-                style={{ backgroundColor: '#0d6efd' }}
-              >
-                Get Started
-              </Link>
-            </li> */}
-          </ul>
-        </div>
-      </div>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow">
+<div className="container-fluid">
+  <div className="d-flex align-items-center justify-content-between w-100">
+    <Link className="navbar-brand d-flex align-items-center" to="/">
+      <img
+        src={NikRenewLogo}  // Use imported logo
+        alt="NIK RENEW"
+        className="me-2"
+        style={{
+          height: '30px',  // Slightly reduced for mobile
+          width: 'auto',
+          objectFit: 'contain'
+        }}
+      />
+      <span className="fw-bold text-primary">NIK RENEW</span>
+    </Link>
+    
+    <button 
+      className="navbar-toggler" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  
+  <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul className="navbar-nav">
+      <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
+      <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
+      <li className="nav-item"><Link className="nav-link" to="/blog">Blog</Link></li>
+      <li className="nav-item"><Link className="nav-link" to="/contact">Contact</Link></li>
+    </ul>
+  </div>
+</div>
     </nav>
   );
 };
