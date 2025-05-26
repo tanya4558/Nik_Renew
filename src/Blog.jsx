@@ -11,6 +11,24 @@ const Blog = () => {
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef(null);
   const scrollPositionRef = useRef(0); // Ref to store the scroll position
+  // ✅ Fetch comments when switching to detail view
+  useEffect(() => {
+    if (currentView === 'detail' && blogPost?.id) {
+      fetchComments(blogPost.id);
+    }
+  }, [currentView, blogPost]);
+  useEffect(() => {
+  const savedPostId = localStorage.getItem("selectedPostId");
+  if (savedPostId) {
+    const post = blogData.find((b) => b.id === parseInt(savedPostId));
+    if (post) {
+      setBlogPost(post);
+      setSelectedPostId(post.id);
+      setCurrentView("detail");
+      fetchComments(post.id);
+    }
+  }
+}, []);
 
   const blogData = [
     {
@@ -105,65 +123,139 @@ const Blog = () => {
     // Add more posts if needed
   ];
 
+  // const fetchComments = async (postId) => {
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     setComments([
+  //     ]);
+  //     setIsLoading(false);
+  //   }, 500);
+  // };
   const fetchComments = async (postId) => {
     setIsLoading(true);
-    setTimeout(() => {
-      setComments([
-      ]);
-      setIsLoading(false);
-    }, 500);
+    try {
+      const res = await fetch("http://localhost:5000/comments");
+      const data = await res.json();
+      // Filter by blogPost.id if supporting multiple posts
+      setComments(data.filter(c => c.postId === postId));
+    } catch (err) {
+      console.error("Error fetching comments", err);
+    }
+    setIsLoading(false);
   };
+const handleReadMore = (postId) => {
+  localStorage.setItem("selectedPostId", postId); // 👈 store to localStorage
 
-  const handleReadMore = (postId) => {
-    setSelectedPostId(postId);
-    const post = blogData.find((b) => b.id === postId);
-    setBlogPost(post);
-    setCurrentView('detail');
-    fetchComments(postId);
+  setSelectedPostId(postId);
+  const post = blogData.find((b) => b.id === postId);
+  setBlogPost(post);
+  setCurrentView("detail");
+  fetchComments(postId);
 
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 0);
-  };
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 0);
+};
 
-  const handleBackToBlog = () => {
-    setCurrentView('list');
-    setSelectedPostId(null);
-    setComments([]);
-  };
+
+  // const handleReadMore = (postId) => {
+  //   setSelectedPostId(postId);
+  //   const post = blogData.find((b) => b.id === postId);
+  //   setBlogPost(post);
+  //   setCurrentView('detail');
+  //   fetchComments(postId);
+
+  //   setTimeout(() => {
+  //     window.scrollTo({ top: 0, behavior: 'smooth' });
+  //   }, 0);
+  // };
+
+  // const handleBackToBlog = () => {
+  //   setCurrentView('list');
+  //   setSelectedPostId(null);
+  //   setComments([]);
+  // };
+const handleBackToBlog = () => {
+  localStorage.removeItem("selectedPostId"); // 👈 clear on back
+  setCurrentView("list");
+  setSelectedPostId(null);
+  setComments([]);
+};
 
   const handleCommentChange = (e) => {
     const { name, value } = e.target;
     setNewComment((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCommentSubmit = (e) => {
+  // const handleCommentSubmit = (e) => {
+  //   e.preventDefault();
+  //   const comment = {
+  //     ...newComment,
+  //     id: comments.length + 1,
+  //     date: new Date().toLocaleDateString(),
+  //     likes: 0,
+  //   };
+  //   setComments((prev) => [...prev, comment]);
+  //   setNewComment({ name: '', email: '', text: '' });
+
+  //   // Save scroll position before submitting the comment
+  //   scrollPositionRef.current = window.scrollY;
+
+  //   // Optionally, reset the scroll position to where it was after submission
+  //   setTimeout(() => {
+  //     window.scrollTo({ top: scrollPositionRef.current, behavior: 'smooth' });
+  //   }, 0);
+  // };
+
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
     const comment = {
       ...newComment,
-      id: comments.length + 1,
+      postId: blogPost.id,
       date: new Date().toLocaleDateString(),
       likes: 0,
     };
-    setComments((prev) => [...prev, comment]);
-    setNewComment({ name: '', email: '', text: '' });
 
-    // Save scroll position before submitting the comment
-    scrollPositionRef.current = window.scrollY;
-
-    // Optionally, reset the scroll position to where it was after submission
-    setTimeout(() => {
-      window.scrollTo({ top: scrollPositionRef.current, behavior: 'smooth' });
-    }, 0);
+    const res = await fetch("http://localhost:5000/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(comment),
+    });
+    const saved = await res.json();
+    setComments((prev) => [...prev, saved]);
+    setNewComment({ name: "", email: "", text: "" });
   };
 
-  const handleLikeComment = (id) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === id ? { ...comment, likes: comment.likes + 1 } : comment
-      )
+
+  // const handleLikeComment = (id) => {
+  //   setComments((prev) =>
+  //     prev.map((comment) =>
+  //       comment.id === id ? { ...comment, likes: comment.likes + 1 } : comment
+  //     )
+  //   );
+  // };
+  const handleLikeComment = async (id) => {
+    const comment = comments.find(c => c.id === id);
+    const updated = { ...comment, likes: comment.likes + 1 };
+
+    await fetch(`http://localhost:5000/comments/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    });
+
+    setComments(prev =>
+      prev.map(c => c.id === id ? updated : c)
     );
   };
+
+  const handleDeleteComment = async (id) => {
+    await fetch(`http://localhost:5000/comments/${id}`, {
+      method: "DELETE",
+    });
+    setComments((prev) => prev.filter((c) => c.id !== id));
+  };
+
 
   const BlogListView = () => (
     <div className="container py-5">
@@ -198,6 +290,18 @@ const Blog = () => {
       </div>
     </div>
   );
+  useEffect(() => {
+  fetch('http://localhost:5000/comments')
+    .then(res => res.json())
+    .then(data => setComments(data))
+    .catch(console.error);
+}, []);
+
+// useEffect(() => {
+//   if (currentView === 'detail' && blogPost?.id) {
+//     fetchComments(blogPost.id);
+//   }
+// }, [currentView, blogPost]);
 
 
   return (
@@ -245,6 +349,13 @@ const Blog = () => {
                           <i className="bi bi-hand-thumbs-up me-1"></i>
                           {comment.likes} Likes
                         </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger ms-2"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          Delete
+                        </button>
+
                       </li>
                     ))}
                   </ul>

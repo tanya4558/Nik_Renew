@@ -6,7 +6,7 @@ const ContactPage = () => {
     {
       name: 'Rahul Chourasia',
       role: 'CEO & Co-Founder',
-      phone: '+44 7774 842038',
+      //phone: '+44 7774 842038',
       email: 'Rahul@nikrenewenergy.com',
       location: 'London, United Kingdom',
       whatsapp: 'https://wa.me/447774842038'
@@ -14,7 +14,7 @@ const ContactPage = () => {
     {
       name: 'Nikhil Kumar',
       role: 'Co-Founder',
-      phone: '+44 7745 238153',
+      //phone: '+44 7745 238153',
       email: 'Nikhil@nikrenewenergy.com',
       location: 'London, United Kingdom',
       whatsapp: 'https://wa.me/447745238153'
@@ -23,7 +23,7 @@ const ContactPage = () => {
 
   return (
     <div className="bg-light-subtle py-5 min-vh-10 d-flex align-items-center justify-content-center">
-      <div className="w-100" style={{ maxWidth: '1100px' }}>
+      <div className="w-100" style={{ maxWidth: '1300px' }}>
         <div className="shadow-lg rounded-4 bg-white p-4">
           <div className="text-center mb-4">
             <h2 className="fw-bold">Contact Us</h2>
@@ -37,13 +37,13 @@ const ContactPage = () => {
                 <div className="p-3 border rounded-3 d-flex flex-column w-100">
                   <h4 className="fw-bold text-success">{person.name}</h4>
                   <p className="text-muted">{person.role}</p>
-                  <div className="d-flex align-items-start mb-2">
+                  {/* <div className="d-flex align-items-start mb-2">
                     <FaPhone className="me-2 mt-1 text-success" />
                     <span>{person.phone}</span>
-                  </div>
+                  </div> */}
                   <div className="d-flex align-items-start mb-2">
                     <FaEnvelope className="me-2 mt-1 text-success" />
-                    <span className="text-break">{person.email}</span>
+                    <span className="text-break text-nowrap">{person.email}</span>
                   </div>
                   <div className="d-flex align-items-start mb-3">
                     <FaMapMarkerAlt className="me-2 mt-1 text-success" />

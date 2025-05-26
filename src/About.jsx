@@ -22,7 +22,7 @@ const About = () => {
                 systems across the globe.
               </p>
               
-              <div className="my-5">
+              {/* <div className="my-5">
                 <h3 className="mb-4">Our Mission</h3>
                 <p>
                   Our mission is to drive the transition to a more sustainable and renewable energy future by providing
@@ -30,7 +30,7 @@ const About = () => {
                   return. We are committed to ensure that our client investment in solar energy remains productive,
                   profitable, and environmentally responsible.
                 </p>
-              </div>
+              </div> */}
               
               <div className="my-5">
                 <h3 className="mb-4">Our Expertise</h3>
